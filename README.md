@@ -19,20 +19,20 @@
   - [Create VPC Setup Playbook](#package-create-vpc-setup-playbook)
   - [Create Bastion setup playbook](#package-create-bastion-setup-playbook)
   - [Site.yml playbook to call both playbook at once](#package-site.yml-playbook-to-call-both-playbook-at-once)
-  - [Playbook to launch ec2, elb, sec grp for vprofile]
-  - [Get into vprofile vpc]
-  - [Playbooks for vprofile stack setup]
-  - [Moving Controller in VPC]
-  - [Variable Templates and Inventory]
-  - [Create Master Playbook] 
-  - [Create Code Build Playbook]
-  - [Create Hostname IP Mapping Playbook]
-  - [Create Database Playbook]
-  - [Create Memcached Playbook]
-  - [Create RabbitMQ Playbook]
-  - [Create Tomcat Playbook]
-  - [Create Nginx Playbook]
-  - [Create Execution]
+  - [Playbook to launch ec2, elb, sec grp for vprofile](#package-playbook-to-launch-ec2,-elb,-sec-grp-for-vprofile)
+  - [Get into vprofile vpc](#package-get-into-vprofile-vpc)
+  - [Playbooks for vprofile stack setup](#package-playbooks-for-vprofile-stack-setup)	
+  - [Moving Controller in VPC](#package-moving-controller-in-vpc)
+  - [Variable Templates and Inventory](#package-variable-templates-and-inventory)
+  - [Create Master Playbook](#package-create-master-playbook)
+  - [Create Code Build Playbook](#package-create-code-build-playbook)
+  - [Create Hostname IP Mapping Playbook](#package-create-hostname-ip-mapping-playbook)
+  - [Create Database Playbook](#package-create-database-playbook)
+  - [Create Memcached Playbook](#package-create-memcached-playbook)
+  - [Create RabbitMQ Playbook](#package-create-rabbitmq-playbook)
+  - [Create Tomcat Playbook](#package-create-tomcat-playbook)
+  - [Create Nginx Playbook](#package-create-nginx-playbook)
+  - [Create Execution](#package-create-execution)
 - [Resources](#page_facing_up-resources)
 - [Credit/Acknowledgment](#star2-creditacknowledgment)
 
