@@ -22,17 +22,17 @@
   - [Playbook to launch ec2 elb sec grp for vprofile](#package-playbook-to-launch-ec2-elb-sec-grp-for-vprofile)
   - [Get into vprofile vpc](#package-get-into-vprofile-vpc)
   - [Playbooks for vprofile stack setup](#package-playbooks-for-vprofile-stack-setup)	
-  - [Moving Controller in VPC](#package-moving-controller-in-vpc)
-  - [Variable Templates and Inventory](#package-variable-templates-and-inventory)
-  - [Create Master Playbook](#package-create-master-playbook)
-  - [Create Code Build Playbook](#package-create-code-build-playbook)
-  - [Create Hostname IP Mapping Playbook](#package-create-hostname-ip-mapping-playbook)
-  - [Create Database Playbook](#package-create-database-playbook)
-  - [Create Memcached Playbook](#package-create-memcached-playbook)
-  - [Create RabbitMQ Playbook](#package-create-rabbitmq-playbook)
-  - [Create Tomcat Playbook](#package-create-tomcat-playbook)
-  - [Create Nginx Playbook](#package-create-nginx-playbook)
-  - [Create Execution](#package-create-execution)
+    - [Moving Controller in VPC](#package-moving-controller-in-vpc)
+    - [Variable Templates and Inventory](#package-variable-templates-and-inventory)
+    - [Create Master Playbook](#package-create-master-playbook)
+    - [Create Code Build Playbook](#package-create-code-build-playbook)
+    - [Create Hostname IP Mapping Playbook](#package-create-hostname-ip-mapping-playbook)
+    - [Create Database Playbook](#package-create-database-playbook)
+    - [Create Memcached Playbook](#package-create-memcached-playbook)
+    - [Create RabbitMQ Playbook](#package-create-rabbitmq-playbook)
+    - [Create Tomcat Playbook](#package-create-tomcat-playbook)
+    - [Create Nginx Playbook](#package-create-nginx-playbook)
+    - [Create Execution](#package-create-execution)
 - [Resources](#page_facing_up-resources)
 - [Credit/Acknowledgment](#star2-creditacknowledgment)
 
@@ -188,20 +188,112 @@
 </div>
 <br/>
 
-Playbook to launch ec2, elb, sec grp for vprofile
-Get into vprofile vpc
-Playbooks for vprofile stack setup
-Moving Controller in VPC
-Variable Templates and Inventory
-Create Master Playbook 
-Create Code Build Playbook
-Create Hostname IP Mapping Playbook
-Create Database Playbook
-Create Memcached Playbook
-Create RabbitMQ Playbook
-Create Tomcat Playbook
-Create Nginx Playbook
-Create Execution
+### :package: Playbook to launch ec2 elb sec grp for vprofile
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+### :package: Get into vprofile vpc
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+### :package: Playbooks for vprofile stack setup
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Moving Controller in VPC
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Variable Templates and Inventory
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Master Playbook 
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Code Build Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Hostname IP Mapping Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Database Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Memcached Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create RabbitMQ Playbook
+
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Tomcat Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Nginx Playbook
+
+<br/>
+<div align="right">
+    <b><a href="#Project-10">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Create Execution
 
 
 ## :page_facing_up: Resources
