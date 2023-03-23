@@ -1187,8 +1187,70 @@ ansible-playbook vpro_ec2_stack
     <b><a href="#Project-11">↥ back to top</a></b>
 </div>
 <br/>
-#### :package: Moving Controller in VPC
+#### :package:  Dynamic Inventory and Dynamic variables
 
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create dynamic inventory and dynamic variables for our vfrofile stack. 
+
+
+```sh
+- name: Insert/Update Hosts IP & Name in file provision-stack/group_vars/hostsip
+      blockinfile:
+        path: provision-stack/group_vars/hostsip
+        block: |
+          web01_ip: {{ web01_out.tagged_instances[0].private_ip }}
+          app01_ip: {{ app01_out.tagged_instances[0].private_ip }}
+          rmq01_ip: {{ rmq01_out.tagged_instances[0].private_ip }}
+          mc01_ip: {{ mc01_out.tagged_instances[0].private_ip }}
+          db01_ip: {{ db01_out.tagged_instances[0].private_ip }}
+
+    - name: Copy login key to provision_stack directory
+      copy:
+        src: loginkey_vpro.pem
+        dest: provision-stack/loginkey_vpro.pem
+        mode: '0400'
+
+    - name: Insert/Update Inventory file provision-stack/inventory-vpro
+      blockinfile:
+        path: provision-stack/inventory-vpro
+        block: |
+          web01 ansible_host={{ web01_out.tagged_instances[0].private_ip }}
+          app01 ansible_host={{ app01_out.tagged_instances[0].private_ip }}
+          rmq01 ansible_host={{ rmq01_out.tagged_instances[0].private_ip }}
+          mc01 ansible_host={{ mc01_out.tagged_instances[0].private_ip }}
+          db01 ansible_host={{ db01_out.tagged_instances[0].private_ip }}
+          cntl ansible_host=127.0.0.1 ansible_connection=local
+
+          [websrvgrp]
+          web01
+
+          [appsrvgrp]
+          app01
+
+          [rmqsrvgrp]
+          rmq01
+
+          [mcsrvgrp]
+          mc01
+
+          [dbsrvgrp]
+          db01
+
+          [control]
+          cntl
+
+          [stack_inst:children]
+          websrvgrp
+          appsrvgrp
+          rmqsrvgrp
+          mcsrvgrp
+          dbsrvgrp
+
+          [stack_inst:vars]
+          ansible_user=ubuntu
+          ansible_ssh_private_key_file=loginkey_vpro.pem
+          #ansible_python_interpreter=/usr/bin/python3
+
+   ```
 <br/>
 <div align="right">
     <b><a href="#Project-11">↥ back to top</a></b>
