@@ -782,7 +782,7 @@ ansible-playbook bastion-host.yml
    
   ![Project Image](project-image-url)
   
-- On your AWS Console search for VPC service to view changes
+- On your AWS Console search for EC2 service to view changes
 
 -![Project Image](project-image-url)
 
@@ -822,8 +822,193 @@ ansible-playbook site.yml
 </div>
 <br/>
 
+#### :package: Create Variables File for vprofile stack setup
+
+- On your IDE, create a variables file name it `vprostacksetup`. This variable fill will contain all the AMI ID that we will use for our project  
+
+
+
+Inside the `vprostacksetup`, search for current AMI ID and put in the file. Mine is as below.
+
+
+```sh
+nginx_ami: ami-07efac79022b86107
+tomcat_ami: ami-07efac79022b86107
+memcache_ami: ami-07efac79022b86107
+rmq_ami: ami-07efac79022b86107
+mysql_ami: ami-07efac79022b86107
+
+   ```
+   
+Let's also join the two variab;e file `vpc_setup` and `bastion_setup` we created earlier in to one variable file and name the file `vpc_setup` 
+   
+```sh
+vpc_name: "Vprofile-vpc"
+
+# VPC Range
+vpcCidr: '172.20.0.0/16'
+
+# Subnets Range
+PubSub1Cidr: 172.20.1.0/24
+PubSub2Cidr: 172.20.2.0/24
+PubSub3Cidr: 172.20.3.0/24
+PrivSub1Cidr: 172.20.4.0/24
+PrivSub2Cidr: 172.20.5.0/24
+PrivSub3Cidr: 172.20.6.0/24
+
+# Region Name
+region: "us-east-2"
+
+# Zone Names
+zone1: us-east-2a
+zone2: us-east-2b
+zone3: us-east-2c
+
+state: present
+
+# Bastion Vars
+bastion_ami: ami-03657b56516ab7912
+MYIP: 183.83.39.203/32
+
+   ```
+   
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
 
 ### :package: Playbooks for vprofile stack setup
+
+- Will create playbooks to set up our entire vprofile stack.
+
+- Let's call this playbook `vpro_ec2_stack`. Create the file with the following content. 
+
+
+```sh
+---
+- name: Setup Vprofile Stack
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Import VPC setup Variable
+      include_vars: vars/vpc-output_vars
+
+    - name: Import vprofile setup Variable
+      include_vars: vars/vprostacksetup
+
+    - name: Create vprofile ec2 key
+      ec2_key:
+        name: vprokey
+        region: "{{region}}"
+      register: vprokey_out
+
+    - name: Save private key into file loginkey_vpro.pem
+      copy:
+        content: "{{vprokey_out.key.private_key}}"
+        dest: "./loginkey_vpro.pem"
+        mode: 0600
+      when: vprokey_out.changed
+
+    - name: Create Securiry Group for Load Balancer
+      ec2_group:
+        name: vproELB-sg
+        description: Allow port 80 from everywhere and all port within sg
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+      register: vproELBSG_out
+
+   ```
+
+- Commit and push this file to GitHub, also pull this file in our Ansible machine on AWS. If you have any confidential file that you don't want to push to github, remember to create a git ingnore file and add the extention of the file to keep the file private 
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
+
+
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+
+#### :package: Security Group for vprofile stack setup
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
+
+
+```sh
+nginx_ami: ami-07efac79022b86107
+tomcat_ami: ami-07efac79022b86107
+memcache_ami: ami-07efac79022b86107
+rmq_ami: ami-07efac79022b86107
+mysql_ami: ami-07efac79022b86107
+
+   ```
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service an security group to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+#### :package: Security Group for vprofile stack setup
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
+
+
+```sh
+nginx_ami: ami-07efac79022b86107
+tomcat_ami: ami-07efac79022b86107
+memcache_ami: ami-07efac79022b86107
+rmq_ami: ami-07efac79022b86107
+mysql_ami: ami-07efac79022b86107
+
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
 
 <br/>
 <div align="right">
