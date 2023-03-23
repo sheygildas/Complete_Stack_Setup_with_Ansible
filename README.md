@@ -911,19 +911,6 @@ MYIP: 183.83.39.203/32
         mode: 0600
       when: vprokey_out.changed
 
-    - name: Create Securiry Group for Load Balancer
-      ec2_group:
-        name: vproELB-sg
-        description: Allow port 80 from everywhere and all port within sg
-        region: "{{region}}"
-        vpc_id: "{{vpcid}}"
-        rules:
-          - proto: tcp
-            from_port: 80
-            to_port: 80
-            cidr_ip: 0.0.0.0/0
-      register: vproELBSG_out
-
    ```
 
 - Commit and push this file to GitHub, also pull this file in our Ansible machine on AWS. If you have any confidential file that you don't want to push to github, remember to create a git ingnore file and add the extention of the file to keep the file private 
@@ -936,7 +923,7 @@ ansible-playbook vpro_ec2_stack
    
   ![Project Image](project-image-url)
   
-- On your AWS Console search for EC2 service to view changes
+- On your AWS Console search for EC2 service then key pair to view changes
 
 -![Project Image](project-image-url)
 
@@ -949,7 +936,7 @@ ansible-playbook vpro_ec2_stack
 <br/>
 
 
-#### :package: Security Group for vprofile stack setup
+#### :package: Create Security Group for vprofile stack setup
 
 
 - Let's add the following code to our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
@@ -1019,18 +1006,120 @@ ansible-playbook vpro_ec2_stack
 </div>
 <br/>
 
-#### :package: Security Group for vprofile stack setup
+#### :package: Create EC2 Instances for vprofile stack setup
 
 
-- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
 
 
 ```sh
-nginx_ami: ami-07efac79022b86107
-tomcat_ami: ami-07efac79022b86107
-memcache_ami: ami-07efac79022b86107
-rmq_ami: ami-07efac79022b86107
-mysql_ami: ami-07efac79022b86107
+- name: Creating Nginx web01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{nginx_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "web01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "web01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: web01_out
+
+    - name: Creating tomcat app01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{tomcat_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "app01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "app01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: app01_out
+
+    - name: Creating memcache mc01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{memcache_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "mc01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "mc01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: mc01_out
+
+    - name: Creating RabbitMQ rmq01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{rmq_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "rmq01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "rmq01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: rmq01_out
+
+    - name: Creating Mysql db01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{mysql_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "db01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "db01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: db01_out
+
+    - debug:
+        var: db01_out.tagged_instances[0].id
 
    ```
 
@@ -1053,6 +1142,51 @@ ansible-playbook vpro_ec2_stack
 </div>
 <br/>
 
+#### :package: Create Load Balancer for vprofile stack setup
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the load balancer for our vfrofile stack. 
+
+
+```sh
+- local_action:
+        module: ec2_elb_lb
+        name: "vprofile-elb"
+        region: "{{region}}"
+        state: present
+        instance_ids:
+          - "{{ web01_out.tagged_instances[0].id }}"
+        purge_instance_ids: true
+        security_group_ids: "{{ vproELBSG_out.group_id }}"
+        subnets:
+          - "{{ pubsub1id }}"
+          - "{{ pubsub2id }}"
+          - "{{ pubsub3id }}"
+        listeners:
+          - protocol: http # options are http, https, ssl, tcp
+            load_balancer_port: 80
+            instance_port: 80
+            
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for load balancer service to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
 #### :package: Moving Controller in VPC
 
 <br/>
