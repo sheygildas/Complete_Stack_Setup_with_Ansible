@@ -20,17 +20,14 @@
   - [Create Bastion setup playbook](#package-create-bastion-setup-playbook)
   - [Site.yml playbook to call both playbook at once](#package-siteyml-playbook-to-call-both-playbook-at-once)
   - [Playbooks for vprofile stack setup](#package-playbooks-for-vprofile-stack-setup)	
-    - [Moving Controller in VPC](#package-moving-controller-in-vpc)
-    - [Variable Templates and Inventory](#package-variable-templates-and-inventory)
-    - [Create Master Playbook](#package-create-master-playbook)
-    - [Create Code Build Playbook](#package-create-code-build-playbook)
-    - [Create Hostname IP Mapping Playbook](#package-create-hostname-ip-mapping-playbook)
+    - [Create Security Group Playbook](#package-create-group-playbook)
     - [Create Database Playbook](#package-create-database-playbook)
     - [Create Memcached Playbook](#package-create-memcached-playbook)
     - [Create RabbitMQ Playbook](#package-create-rabbitmq-playbook)
     - [Create Tomcat Playbook](#package-create-tomcat-playbook)
     - [Create Nginx Playbook](#package-create-nginx-playbook)
-    - [Create Execution](#package-create-execution)
+    - [Create Load Balancer Playbook](#package-create-load-balancer-playbook)
+    - [Dynamic Inventory and Dynamic variables Playbook](#package-dynamic-inventory-and-dynamic-variables-playbook)
 - [Resources](#page_facing_up-resources)
 - [Credit/Acknowledgment](#star2-creditacknowledgment)
 
@@ -936,7 +933,7 @@ ansible-playbook vpro_ec2_stack
 <br/>
 
 
-#### :package: Create Security Group for vprofile stack setup
+#### :package: Create Security Group Playbook
 
 
 - Let's add the following code to our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
@@ -1006,96 +1003,13 @@ ansible-playbook vpro_ec2_stack
 </div>
 <br/>
 
-#### :package: Create EC2 Instances for vprofile stack setup
+#### :package: Create Database Playbook
 
 
 - Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
 
 
 ```sh
-- name: Creating Nginx web01
-      ec2:
-        key_name: vprokey
-        region: "{{region}}"
-        instance_type: t2.micro
-        image: "{{nginx_ami}}"
-        wait: yes
-        wait_timeout: 300
-        instance_tags:
-          Name: "web01"
-          Project: Vprofile
-          Owner: DevOps Team
-        exact_count: 1
-        count_tag:
-          Name: "web01"
-          Project: Vprofile
-          Owner: DevOps Team
-        group_id: "{{vproStackSG_out.group_id}}"
-        vpc_subnet_id: "{{privsub1id}}"
-      register: web01_out
-
-    - name: Creating tomcat app01
-      ec2:
-        key_name: vprokey
-        region: "{{region}}"
-        instance_type: t2.micro
-        image: "{{tomcat_ami}}"
-        wait: yes
-        wait_timeout: 300
-        instance_tags:
-          Name: "app01"
-          Project: Vprofile
-          Owner: DevOps Team
-        exact_count: 1
-        count_tag:
-          Name: "app01"
-          Project: Vprofile
-          Owner: DevOps Team
-        group_id: "{{vproStackSG_out.group_id}}"
-        vpc_subnet_id: "{{privsub1id}}"
-      register: app01_out
-
-    - name: Creating memcache mc01
-      ec2:
-        key_name: vprokey
-        region: "{{region}}"
-        instance_type: t2.micro
-        image: "{{memcache_ami}}"
-        wait: yes
-        wait_timeout: 300
-        instance_tags:
-          Name: "mc01"
-          Project: Vprofile
-          Owner: DevOps Team
-        exact_count: 1
-        count_tag:
-          Name: "mc01"
-          Project: Vprofile
-          Owner: DevOps Team
-        group_id: "{{vproStackSG_out.group_id}}"
-        vpc_subnet_id: "{{privsub1id}}"
-      register: mc01_out
-
-    - name: Creating RabbitMQ rmq01
-      ec2:
-        key_name: vprokey
-        region: "{{region}}"
-        instance_type: t2.micro
-        image: "{{rmq_ami}}"
-        wait: yes
-        wait_timeout: 300
-        instance_tags:
-          Name: "rmq01"
-          Project: Vprofile
-          Owner: DevOps Team
-        exact_count: 1
-        count_tag:
-          Name: "rmq01"
-          Project: Vprofile
-          Owner: DevOps Team
-        group_id: "{{vproStackSG_out.group_id}}"
-        vpc_subnet_id: "{{privsub1id}}"
-      register: rmq01_out
 
     - name: Creating Mysql db01
       ec2:
@@ -1142,7 +1056,213 @@ ansible-playbook vpro_ec2_stack
 </div>
 <br/>
 
-#### :package: Create Load Balancer for vprofile stack setup
+
+#### :package: Create Memcached Playbook
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
+
+
+```sh
+
+    - name: Creating memcache mc01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{memcache_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "mc01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "mc01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: mc01_out
+
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+
+#### :package: Create RabbitMQ Playbook
+
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
+
+
+```sh
+
+    - name: Creating RabbitMQ rmq01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{rmq_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "rmq01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "rmq01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: rmq01_out
+
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+
+#### :package: Create Tomcat Playbook
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
+
+
+```sh
+
+    - name: Creating tomcat app01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{tomcat_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "app01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "app01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: app01_out
+
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+
+#### :package: Create Nginx Playbook
+
+
+- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the instances for our project. 
+
+
+```sh
+- name: Creating Nginx web01
+      ec2:
+        key_name: vprokey
+        region: "{{region}}"
+        instance_type: t2.micro
+        image: "{{nginx_ami}}"
+        wait: yes
+        wait_timeout: 300
+        instance_tags:
+          Name: "web01"
+          Project: Vprofile
+          Owner: DevOps Team
+        exact_count: 1
+        count_tag:
+          Name: "web01"
+          Project: Vprofile
+          Owner: DevOps Team
+        group_id: "{{vproStackSG_out.group_id}}"
+        vpc_subnet_id: "{{privsub1id}}"
+      register: web01_out
+
+   ```
+
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook vpro_ec2_stack
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for EC2 service to view changes
+
+-![Project Image](project-image-url)
+
+<br/>
+<div align="right">
+    <b><a href="#Project-11">↥ back to top</a></b>
+</div>
+<br/>
+
+
+
+#### :package: Create Load Balancer Playbook
 
 
 - Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the load balancer for our vfrofile stack. 
@@ -1187,7 +1307,12 @@ ansible-playbook vpro_ec2_stack
     <b><a href="#Project-11">↥ back to top</a></b>
 </div>
 <br/>
+
+
 #### :package:  Dynamic Inventory and Dynamic variables
+
+- Before storing all the public and private IP addresses of our instances, let's create two directories where these variable will be stored.
+- In your IDE, create a directory and name it `provision-stack`create another one called `group_vars. This second directory should be created inside the `provision-stack` directory.
 
 - Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create dynamic inventory and dynamic variables for our vfrofile stack. 
 
@@ -1257,80 +1382,6 @@ ansible-playbook vpro_ec2_stack
 </div>
 <br/>
 
-#### :package: Variable Templates and Inventory
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Master Playbook 
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Code Build Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Hostname IP Mapping Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Database Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Memcached Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create RabbitMQ Playbook
-
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Tomcat Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Nginx Playbook
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-#### :package: Create Execution
 
 
 ## :page_facing_up: Resources
