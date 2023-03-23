@@ -20,7 +20,7 @@
   - [Create Bastion setup playbook](#package-create-bastion-setup-playbook)
   - [Site.yml playbook to call both playbook at once](#package-siteyml-playbook-to-call-both-playbook-at-once)
   - [Playbooks for vprofile stack setup](#package-playbooks-for-vprofile-stack-setup)	
-    - [Create Security Group Playbook](#package-create-group-playbook)
+    - [Create Security Group Playbook](#package-create-security-group-playbook)
     - [Create Database Playbook](#package-create-database-playbook)
     - [Create Memcached Playbook](#package-create-memcached-playbook)
     - [Create RabbitMQ Playbook](#package-create-rabbitmq-playbook)
@@ -1309,7 +1309,7 @@ ansible-playbook vpro_ec2_stack
 <br/>
 
 
-#### :package:  Dynamic Inventory and Dynamic variables
+#### :package:  Dynamic Inventory and Dynamic variables Playbook
 
 - Before storing all the public and private IP addresses of our instances, let's create two directories where these variable will be stored.
 - In your IDE, create a directory and name it `provision-stack`create another one called `group_vars. This second directory should be created inside the `provision-stack` directory.
