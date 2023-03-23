@@ -19,8 +19,6 @@
   - [Create VPC Setup Playbook](#package-create-vpc-setup-playbook)
   - [Create Bastion setup playbook](#package-create-bastion-setup-playbook)
   - [Site.yml playbook to call both playbook at once](#package-siteyml-playbook-to-call-both-playbook-at-once)
-  - [Playbook to launch ec2 elb sec grp for vprofile](#package-playbook-to-launch-ec2-elb-sec-grp-for-vprofile)
-  - [Get into vprofile vpc](#package-get-into-vprofile-vpc)
   - [Playbooks for vprofile stack setup](#package-playbooks-for-vprofile-stack-setup)	
     - [Moving Controller in VPC](#package-moving-controller-in-vpc)
     - [Variable Templates and Inventory](#package-variable-templates-and-inventory)
@@ -797,28 +795,33 @@ ansible-playbook bastion-host.yml
 
 ### :package: Site.yml playbook to call both playbook at once
 
+- Create a `site.yml` playbook to join both vpc-setup.yml and bastion-host.yml with the details below
 
+```sh
+---
+- import_playbook: vpc-setup.yml
+- import_playbook: bastion-host.yml
+   ```
+   
+ - Commit and push this file to GitHub, also pull this file in our Ansible machine on AWS
+
+- RUN the play book using the following command on your AWS Ansible machine 
+
+```sh
+ansible-playbook site.yml
+   ```
+   
+  ![Project Image](project-image-url)
+  
+- On your AWS Console search for VPC service to view changes
+
+-![Project Image](project-image-url)
 <br/>
 <div align="right">
     <b><a href="#Project-11">↥ back to top</a></b>
 </div>
 <br/>
 
-### :package: Playbook to launch ec2 elb sec grp for vprofile
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
-
-### :package: Get into vprofile vpc
-
-<br/>
-<div align="right">
-    <b><a href="#Project-11">↥ back to top</a></b>
-</div>
-<br/>
 
 ### :package: Playbooks for vprofile stack setup
 
