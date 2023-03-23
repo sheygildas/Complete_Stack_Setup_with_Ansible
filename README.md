@@ -952,15 +952,52 @@ ansible-playbook vpro_ec2_stack
 #### :package: Security Group for vprofile stack setup
 
 
-- Let's add the following code tou our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
+- Let's add the following code to our  `vpro_ec2_stack` playbook. This will create the security group for our instance. 
 
 
 ```sh
-nginx_ami: ami-07efac79022b86107
-tomcat_ami: ami-07efac79022b86107
-memcache_ami: ami-07efac79022b86107
-rmq_ami: ami-07efac79022b86107
-mysql_ami: ami-07efac79022b86107
+- name: Create Securiry Group for Load Balancer
+      ec2_group:
+        name: vproELB-sg
+        description: Allow port 80 from everywhere and all port within sg
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+      register: vproELBSG_out
+
+    - name: Create Securiry Group for Vprofile Stack
+      ec2_group:
+        name: vproStack-sg
+        description: Allow port 22 from everywhere and all port within sg
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        purge_rules: no
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            group_id: "{{vproELBSG_out.group_id}}"
+
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            group_id: "{{BastionSGid}}"
+      register: vproStackSG_out
+
+    - name: Update Securiry Group with its own sg id
+      ec2_group:
+        name: vproStack-sg
+        description: Allow port 22 from everywhere and all port within sg
+        region: "{{region}}"
+        vpc_id: "{{vpcid}}"
+        purge_rules: no
+        rules:
+          - proto: all
+            group_id: "{{vproStackSG_out.group_id}}"
 
    ```
 
